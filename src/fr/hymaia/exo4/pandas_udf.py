@@ -5,10 +5,8 @@ import time
 import psutil
 import threading
 
-# Initialize SparkSession
 spark = SparkSession.builder.appName('exo4').master("local[*]").getOrCreate()
 
-# Define the HardwareMonitor class
 class HardwareMonitor:
     def __init__(self, interval=1):
         self.interval = interval
