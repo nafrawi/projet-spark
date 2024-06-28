@@ -43,7 +43,7 @@ run_and_log "no_udf"
 run_and_log "scala_udf"
 run_and_log "python_udf"
 run_and_log "pandas_udf"
-
+poetry run plot 
 echo "Test write after runs" >> "$OUTPUT_FILE"
 
 echo "Benchmarks completed. " >&2

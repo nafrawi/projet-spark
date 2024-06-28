@@ -1,39 +1,17 @@
 import time
+
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as f
 from pyspark.sql.window import Window
+
 import psutil
+
 import threading
 
-class HardwareMonitor:
-    def __init__(self, interval=1):
-        self.interval = interval
-        self.cpu_percentages = []
-        self.memory_usages = []
-        self._stop_event = threading.Event()
+import pandas as pd 
 
-    def start(self):
-        self._monitor_thread = threading.Thread(target=self._monitor)
-        self._monitor_thread.start()
+from src.fr.hymaia.exo4.monitor import HardwareMonitor 
 
-    def stop(self):
-        self._stop_event.set()
-        self._monitor_thread.join()
-
-    def _monitor(self):
-        while not self._stop_event.is_set():
-            self.cpu_percentages.append(psutil.cpu_percent(interval=self.interval))
-            self.memory_usages.append(psutil.virtual_memory().used / (1024 ** 3))  # GB
-            time.sleep(self.interval)
-
-    def get_avg_cpu(self):
-        return sum(self.cpu_percentages) / len(self.cpu_percentages) if self.cpu_percentages else 0
-
-    def get_avg_memory(self):
-        return sum(self.memory_usages) / len(self.memory_usages) if self.memory_usages else 0
-
-    def get_peak_memory(self):
-        return max(self.memory_usages) if self.memory_usages else 0
 
 def main():
     spark = SparkSession.builder.appName("exo4").master("local[*]").getOrCreate()
@@ -71,7 +49,13 @@ def main():
         'peak_memory_usage': monitor.get_peak_memory(),
     }
     print(data)
+    
+    data = pd.DataFrame([data])
+    data.to_csv('no_udf.csv')        
 
+
+
+    
 def calculate_total_price_per_category_per_day(df):
     window_spec = Window.partitionBy("category", "date")
     df = df.withColumn("total_price_per_category_per_day",
