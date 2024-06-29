@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 csv_files = {'/home/nafra/Bureau/code/spark-handson/csvs/no_udf.csv' : 'no_udf', 
 '/home/nafra/Bureau/code/spark-handson/csvs/python_udf.csv' : 'python_udf',
  '/home/nafra/Bureau/code/spark-handson/csvs/pandas_udf.csv' : 'pandas_udf', 
- '/home/nafra/Bureau/code/spark-handson/csvs/scala_udf.csv': 'scala_udf'}
-
+ '/home/nafra/Bureau/code/spark-handson/csvs/scala_udf.csv': 'scala_udf',
+ '/home/nafra/Bureau/code/spark-handson/csvs/scala_no_udf.csv': 'scala_no_udf'}
 def main():
 
  dfs = []
