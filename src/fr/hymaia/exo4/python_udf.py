@@ -9,7 +9,7 @@ import psutil
 
 import threading
 
-from src.fr.hymaia.exo4.monitor import HardwareMonitor 
+from src.fr.hymaia.exo4.utils.monitor import HardwareMonitor 
 
 spark = SparkSession.builder.appName('exo4').master("local[*]").getOrCreate()
 
@@ -44,4 +44,4 @@ def main():
     } 
     print(data)
     data = pd.DataFrame([data])
-    data.to_csv('python_udf.csv')        
+    data.to_csv('csvs/python_udf.csv')        

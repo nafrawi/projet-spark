@@ -5,9 +5,10 @@ import time
 import psutil
 import threading
 
+from src.fr.hymaia.exo4.utils.monitor import HardwareMonitor 
 
 
-from src.fr.hymaia.exo4.monitor import HardwareMonitor 
+
 spark = SparkSession.builder.appName('exo4').master("local[*]").getOrCreate()
 
 @pandas_udf("string", PandasUDFType.SCALAR)
@@ -41,6 +42,6 @@ def main():
         'peak_memory_usage': monitor.get_peak_memory(),
     }
     data = pd.DataFrame([data])
-    data.to_csv('pandas_udf.csv')        
+    data.to_csv('csvs/pandas_udf.csv')        
     
     print(data)
