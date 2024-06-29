@@ -7,6 +7,10 @@ from src.fr.hymaia.exo4.utils.monitor import HardwareMonitor
 import pandas as pd 
 
 
+
+def add_category_name(df):
+    return df.withColumn("category_name", F.when(df["category"] < 6, "food").otherwise("furniture"))
+
 def calculate_total_price_per_day(df):
     window_spec_per_day = Window.partitionBy("category", "date")
     return df.withColumn("total_price_per_category_per_day", sum("price").over(window_spec_per_day))
