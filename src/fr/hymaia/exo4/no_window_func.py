@@ -5,27 +5,21 @@ import time
 from pyspark.sql.functions import col
 from pyspark.sql import DataFrame
 
+
 spark = SparkSession.builder \
     .appName("exo4") \
     .master("local[*]") \
     .config("spark.executor.memory", "4g") \
     .config("spark.driver.memory", "4g") \
+    .config("spark.executor.cores", "4") \
     .getOrCreate()
-
-# Set the number of shuffle partitions
-spark.conf.set("spark.sql.shuffle.partitions", "400")  # Adjust this number based on your cluster size and data volume
 
 def calculate_total_price_per_category_per_day_last_30_days(df: DataFrame) -> DataFrame:
     df = df.withColumn("date", col("date").cast(DateType()))
     df = df.withColumn("start_date", F.expr("date_sub(date, 30)"))
-    
-    # Persist the dataframe
+    df = df.repartition("category")
     df.persist()
-    
-    # Filter the dataframe to include only necessary columns before the join
     filtered_df = df.select("id", "date", "category", "price", "start_date", "category_name")
-
-    # Perform the join operation
     joined_df = filtered_df.alias("df1").join(
         filtered_df.alias("df2"),
         (F.col("df2.date") <= F.col("df1.date")) &
@@ -42,13 +36,13 @@ def calculate_total_price_per_category_per_day_last_30_days(df: DataFrame) -> Da
 
     return result_df.select(
         col("id"),
-        col("date").cast("string"),  # Cast the date column to string to match the expected schema
+        col("date").cast("string"),  
         col("category"),
         col("price"),
         col("category_name"),
         col("total_price_per_category_per_day_last_30_days")
     )
-
+    
 def main():
     df = spark.read.csv("src/resources/exo4/sell.csv", header=True)
     df = df.withColumn("category_name", (
