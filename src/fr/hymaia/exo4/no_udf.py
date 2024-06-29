@@ -4,14 +4,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as f
 from pyspark.sql.window import Window
 
-import psutil
-
-import threading
-
 import pandas as pd 
 
 from src.fr.hymaia.exo4.monitor import HardwareMonitor 
-
 
 def main():
     spark = SparkSession.builder.appName("exo4").master("local[*]").getOrCreate()
@@ -35,11 +30,16 @@ def main():
     df = calculate_total_price_per_category_per_day_last_30_days(df)
 
     write_start = time.time()
-    df.write.mode("overwrite").parquet("src/output/no_udf.parquet")
+    df.write.mode("overwrite").parquet("src/output/no_udf_noWindow.parquet")
     write_end = time.time()
 
     monitor.stop()
-
+    
+    df = calculate_total_price_per_category_per_day(df)
+    df = calculate_total_price_per_category_per_day_last_30_days(df)
+    
+    df.write.mode("overwrite").parquet("src/output/no_udf.parquet")
+    
     data = {
         'read_time': read_end - read_start,
         'op_time': op_end - op_start,
@@ -52,9 +52,6 @@ def main():
     
     data = pd.DataFrame([data])
     data.to_csv('no_udf.csv')        
-
-
-
     
 def calculate_total_price_per_category_per_day(df):
     window_spec = Window.partitionBy("category", "date")
