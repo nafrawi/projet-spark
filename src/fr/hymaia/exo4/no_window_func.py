@@ -8,8 +8,7 @@ from pyspark.sql import DataFrame
 spark = SparkSession.builder \
     .appName("exo4") \
     .master("local[*]") \
-    .config("spark.executor.memory", "4g") \
-    .config("spark.driver.memory", "4g") \
+    .config("spark.executor.instances", "4") \
     .getOrCreate()
 
 spark.conf.set("spark.sql.shuffle.partitions", "200")
