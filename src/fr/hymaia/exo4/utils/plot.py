@@ -17,9 +17,9 @@ def main():
 
  combined_df = pd.concat(dfs, ignore_index=True)
  fig, axes = plt.subplots(nrows=3, ncols=2, figsize=(14, 15))
- metrics = ['read_time', 'op_time', 'write_time', 'avg_cpu_usage', 'peak_memory_usage']
+ metrics = ['read_time', 'write_time', 'avg_cpu_usage', 'peak_memory_usage']
  colors = ['skyblue', 'orange', 'green', 'red', 'purple']
- titles = ['Read Time', 'Operation Time', 'Write Time', 'Average CPU Usage', 'Peak Memory Usage']
+ titles = ['Read Time', ' Execution time', 'Average CPU Usage', 'Peak Memory Usage']
 
  for i, metric in enumerate(metrics):
     ax = axes[i // 2, i % 2]

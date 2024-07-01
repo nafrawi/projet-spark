@@ -20,22 +20,17 @@ def main():
     monitor.start()
     
     read_start = time.time()
-    df = spark.read.csv("src/resources/exo4/sell.csv", header=True)
+    df = spark.read.csv("src/resources/exo4/sell.csv", header=True,inferSchema=True)
     read_end = time.time()
-    
-    op_start = time.time()
     df = df.withColumn("category_name", create_category_name(df["category"]))
-    op_end = time.time()
-    
     write_start = time.time()
     df.write.mode("overwrite").parquet("src/output/python_udf.parquet")
     write_end = time.time()
-    
+  
     monitor.stop()
     
     data = {
         'read_time': read_end - read_start,
-        'op_time': op_end - op_start,
         'write_time': write_end - write_start,
         'avg_cpu_usage': monitor.get_avg_cpu(),
         'avg_memory_usage': monitor.get_avg_memory(),

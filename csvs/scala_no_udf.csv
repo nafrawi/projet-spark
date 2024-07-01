@@ -1,2 +1,2 @@
-,read_time,op_time,write_time,avg_cpu_usage,avg_memory_usage,peak_memory_usage
-0,2.449909,0.212614,60.298266,0.0,0.0,0.0
+,read_time,write_time,avg_cpu_usage,avg_memory_usage,peak_memory_usage
+0,45.144126,62.863205,0.0,0.0,0.0

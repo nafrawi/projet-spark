@@ -28,18 +28,15 @@ def main():
     monitor = HardwareMonitor()
     monitor.start()
     read_start = time.time()
-    sell_df = spark.read.csv("src/resources/exo4/sell.csv",header=True)
+    sell_df = spark.read.csv("src/resources/exo4/sell.csv",header=True,inferSchema=True)
     read_end = time.time()
-    op_start = time.time()
     sell_df =  sell_df.withColumn("category_name", F.when(sell_df["category"] < 6, "food").otherwise("furniture"))
-    op_end = time.time()
     write_start = time.time()
     sell_df.write.mode("overwrite").parquet("src/output/no_udf_noWindow.parquet")
     write_end = time.time()
     monitor.stop()
     data = {
         'read_time': read_end - read_start,
-        'op_time': op_end - op_start,
         'write_time': write_end - write_start,
         'avg_cpu_usage': monitor.get_avg_cpu(),
         'avg_memory_usage': monitor.get_avg_memory(),

@@ -19,6 +19,7 @@ object ProjetSparkApp {
 
     val operationStartTime = System.nanoTime()
     val transformedData = addCategoryNameColumn(sellData)
+    transformedData.columns
     val operationEndTime = System.nanoTime()
     val operationTime = (operationEndTime - operationStartTime) / 1e9 
     println(s"Time taken for transformation: $operationTime seconds")
@@ -35,16 +36,9 @@ object ProjetSparkApp {
   }
 
   def readCsv(spark: SparkSession, path: String): DataFrame = {
-    val schema = StructType(Array(
-      StructField("id", IntegerType, true),
-      StructField("date", StringType, true),
-      StructField("category", IntegerType, true),
-      StructField("price", DoubleType, true)
-    ))
-
     spark.read
       .option("header", "true")
-      .schema(schema)
+      .option("inferSchema","true")
       .csv(path)
   }
 
@@ -61,8 +55,8 @@ object ProjetSparkApp {
   def writeMetricsToCsv(path: String, readTime: Double, operationTime: Double, writeTime: Double): Unit = {
     val file = new File(path)
     val bw = new BufferedWriter(new FileWriter(file))
-    bw.write(",read_time,op_time,write_time,avg_cpu_usage,avg_memory_usage,peak_memory_usage\n")
-    bw.write(f"0,$readTime%.6f,$operationTime%.6f,$writeTime%.6f,0.0,0.0,0.0\n")
+    bw.write(",read_time,write_time,avg_cpu_usage,avg_memory_usage,peak_memory_usage\n")
+    bw.write(f"0,$readTime%.6f,$writeTime%.6f,0.0,0.0,0.0\n")
     bw.close()
   }
 }
